@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "SilentlyContinue"
 . a:\Test-Command.ps1
 
 Write-Host "Enabling file sharing firewall rules"
@@ -20,6 +20,9 @@ Write-Host "Customize and install add-ons"
 New-Item c:\_Workfile -Type Directory | Out-Null
 Remove-Item "C:\users\vagrant\Desktop\Boxstarter Shell.lnk"
 cinst 7zip baretail curl googlechrome notepadplusplus putty winscp -y
+
+Write-Host "Disable UAC"
+Set-ItemProperty -Path "HKLM:\software\Microsoft\Windows\CurrentVersion\Policies\System" -Name EnableLUA -Value "0" -Type DWORD -force
 
 Write-Host "Cleaning SxS..."
 Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase

@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "SilentlyContinue"
 
 . a:\Test-Command.ps1
 
@@ -15,6 +15,18 @@ Update-ExecutionPolicy -Policy Unrestricted
 #    Uninstall-WindowsFeature -Remove
 #}
 
+# Add WSUS host entry and settings
+$file = Join-Path -Path $($env:windir) -ChildPath "system32\drivers\etc\hosts"
+$data = Get-Content -Path $file
+$data += "192.168.1.151  wsus"
+Set-Content -Value $data -Path $file -Force -Encoding ASCII
+
+New-Item -Path "HKLM:Software\Policies\Microsoft\Windows\WindowsUpdate"
+New-Item -Path "HKLM:Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
+Set-ItemProperty -Path "HKLM:\software\policies\Microsoft\Windows\WindowsUpdate" -Name WUServer -Value "http://wsus:8530" -Type String -force
+Set-ItemProperty -Path "HKLM:\software\policies\Microsoft\Windows\WindowsUpdate" -Name WUStatusServer -Value "http://wsus:8530" -Type String -force
+Set-ItemProperty -Path "HKLM:\software\policies\Microsoft\Windows\WindowsUpdate\AU" -Name UseWUServer -Value "1" -Type DWORD -force
+Restart-Service wuauserv -Force
 
 Install-WindowsUpdate -AcceptEula
 
