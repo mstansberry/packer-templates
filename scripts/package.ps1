@@ -7,13 +7,13 @@ netsh advfirewall firewall add rule name="Remote Desktop" dir=in localport=3389 
 
 Update-ExecutionPolicy -Policy Unrestricted
 
-if (Test-Command -cmdname 'Uninstall-WindowsFeature') {
-    Write-BoxstarterMessage "Removing unused features..."
-    Remove-WindowsFeature -Name 'Powershell-ISE'
-    Get-WindowsFeature | 
-    ? { $_.InstallState -eq 'Available' } | 
-    Uninstall-WindowsFeature -Remove
-}
+#if (Test-Command -cmdname 'Uninstall-WindowsFeature') {
+#    Write-BoxstarterMessage "Removing unused features..."
+#    Remove-WindowsFeature -Name 'Powershell-ISE'
+#    Get-WindowsFeature |
+#    ? { $_.InstallState -eq 'Available' } |
+#    Uninstall-WindowsFeature -Remove
+#}
 
 
 Install-WindowsUpdate -AcceptEula
@@ -39,6 +39,10 @@ catch {
 }
 Enable-PSRemoting @enableArgs
 Enable-WSManCredSSP -Force -Role Server
+Disable-UAC
+Set-StartScreenOptions -EnableBootToDesktop
+Set-WindowsExplorerOptions -EnableShowFileExtensions -EnableShowFullPathInTitleBar
+Set-TaskbarOptions -Size Small -Lock -Combine Full
 winrm set winrm/config/client/auth '@{Basic="true"}'
 winrm set winrm/config/service/auth '@{Basic="true"}'
 winrm set winrm/config/service '@{AllowUnencrypted="true"}'

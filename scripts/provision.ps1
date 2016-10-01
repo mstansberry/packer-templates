@@ -16,6 +16,11 @@ if(Test-Path "e:/VBoxWindowsAdditions.exe") {
     Remove-Item C:\Windows\Temp\virtualbox -Recurse -Force
 }
 
+Write-Host "Customize and install add-ons"
+New-Item c:\_Workfile -Type Directory | Out-Null
+Remove-Item "C:\users\vagrant\Desktop\Boxstarter Shell.lnk"
+cinst 7zip baretail curl googlechrome notepadplusplus putty winscp -y
+
 Write-Host "Cleaning SxS..."
 Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
 
@@ -32,7 +37,7 @@ Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
             try {
               Takeown /d Y /R /f $_
               Icacls $_ /GRANT:r administrators:F /T /c /q  2>&1 | Out-Null
-              Remove-Item $_ -Recurse -Force | Out-Null 
+              Remove-Item $_ -Recurse -Force | Out-Null
             } catch { $global:error.RemoveAt(0) }
         }
     }
@@ -51,7 +56,7 @@ $ArraySize= 64kb
 $SpaceToLeave= $Volume.Size * 0.05
 $FileSize= $Volume.FreeSpace - $SpacetoLeave
 $ZeroArray= new-object byte[]($ArraySize)
- 
+
 $Stream= [io.File]::OpenWrite($FilePath)
 try {
    $CurFileSize = 0

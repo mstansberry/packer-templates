@@ -7,8 +7,7 @@
         [ "modifyvm", "{{.Name}}", "--vram", "48" ],
         [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
       ],
-      "guest_additions_mode": "{{ user `guest_additions_mode` }}",
-      "guest_additions_path": "C:/users/vagrant/VBoxGuestAdditions.iso",
+      "guest_additions_mode": "attach",
       "guest_os_type": "Windows2012_64",
       "headless": "{{ user `headless` }}",
       "iso_url": "{{ user `iso_url` }}",
