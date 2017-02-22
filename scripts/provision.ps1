@@ -16,7 +16,7 @@ if(Test-Path "e:/VBoxWindowsAdditions.exe") {
     Remove-Item C:\Windows\Temp\virtualbox -Recurse -Force
 }
 
-Write-Host "Customize and install add-ons"
+Write-Host "Customize"
 New-Item c:\_Workfile -Type Directory | Out-Null
 Remove-Item "C:\users\vagrant\Desktop\Boxstarter Shell.lnk"
 cinst 7zip baretail curl googlechrome notepadplusplus putty winscp -y

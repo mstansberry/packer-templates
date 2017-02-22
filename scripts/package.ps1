@@ -6,19 +6,28 @@ Enable-RemoteDesktop
 netsh advfirewall firewall add rule name="Remote Desktop" dir=in localport=3389 protocol=TCP action=allow
 
 Update-ExecutionPolicy -Policy Unrestricted
+Add-WindowsFeature -Name NET-Framework-Core -Source d:\sources\sxs
 
-#if (Test-Command -cmdname 'Uninstall-WindowsFeature') {
-#    Write-BoxstarterMessage "Removing unused features..."
-#    Remove-WindowsFeature -Name 'Powershell-ISE'
-#    Get-WindowsFeature |
-#    ? { $_.InstallState -eq 'Available' } |
-#    Uninstall-WindowsFeature -Remove
-#}
+if (Test-Command -cmdname 'Uninstall-WindowsFeature') {
+    Write-BoxstarterMessage "Removing unused features..."
+    Get-WindowsFeature |
+    ? { $_.InstallState -eq 'Available' -and `
+    $_.Name -ne "AD-Certificate" -and `
+    $_.Name -ne "AD-Domain-Services" -and `
+    $_.Name -ne "ADCS-Cert-Authority" -and `
+    $_.Name -ne "DNS" -and `
+    $_.Name -ne "GPMC" -and `
+    $_.Name -ne "RSAT" -and `
+    $_.Name -ne "RSAT-Role-Tools" -and `
+    $_.Name -notlike "RSAT-AD*" -and `
+    $_.Name -ne "RSAT-DNS-Server"} |
+    Uninstall-WindowsFeature -Remove
+}
 
 # Add WSUS host entry and settings
 $file = Join-Path -Path $($env:windir) -ChildPath "system32\drivers\etc\hosts"
 $data = Get-Content -Path $file
-$data += "192.168.1.151  wsus"
+$data += "192.168.1.150  wsus"
 Set-Content -Value $data -Path $file -Force -Encoding ASCII
 
 New-Item -Path "HKLM:Software\Policies\Microsoft\Windows\WindowsUpdate"
