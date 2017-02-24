@@ -6,6 +6,8 @@ Enable-RemoteDesktop
 netsh advfirewall firewall add rule name="Remote Desktop" dir=in localport=3389 protocol=TCP action=allow
 
 Update-ExecutionPolicy -Policy Unrestricted
+
+Write-BoxstarterMessage "Installing legacy .NET frameworks..."
 Add-WindowsFeature -Name NET-Framework-Core -Source d:\sources\sxs
 
 if (Test-Command -cmdname 'Uninstall-WindowsFeature') {
